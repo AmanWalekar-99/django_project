@@ -1,0 +1,42 @@
+Deploying Django Website on AWS
+Steps:
+Log in to the AWS Management Console and navigate to the EC2 service.
+Click on the "Launch Instance" button to begin instance launch wizard.
+•	"Step 1: Choose an Amazon Machine Image (AMI)" section, search for "Ubuntu 18.04 LTS" search bar and select it as the AMI to use for the instance.
+•	"Step 2: Choose an Instance Type" section, select an appropriate instance type for your application's needs.
+•	"Step 3: Configure Instance Details" section, configure any necessary options such as VPC, subnet, IAM role, etc. For a Django website, you may want to select a VPC and subnet that allows public access, and create an IAM role with appropriate permissions.
+•	"Step 4: Add Storage" section, specify the amount of storage required for your application. You can also add additional EBS volumes if needed.
+•	"Step 5: Add Tags" section, add any tags that may be helpful for organization or billing purposes.
+•	"Step 6: Configure Security Group" section, configure a security group that allows inbound traffic on port 80 (HTTP) and 443 (HTTPS) for your website. You may also want to restrict SSH access to a specific IP address range.
+•	"Step 7: Review Instance Launch" section, review the configuration of the instance and make any necessary changes. Then click on the "Launch" button to launch the instance.
+•	"Select an existing key pair or create a new key pair" dialog, select an existing key pair or create a new one. This will be used to securely access the instance via SSH.
+•	Once the instance is launched, note the public IP address or DNS name of the instance. You can use this to access your website.
+•	Connect to the instance via SSH using the key pair specified during launch, and install any necessary software for your Django website. You can also configure your website to run as a service or use a process manager such as Supervisor to ensure that it runs continuously.
+
+Commands 
+1.	Run the series of below commands after logging in to your Ubuntu instance:
+
+	$ sudo apt update & sudo apt upgrade    
+	$ sudo apt install python3-pip
+	$ python3 -m pip install --upgrade pip
+	$ pip install django==3.2
+
+2.	To verify run:
+
+	$ python3 --version
+	$ pip --version
+	$ django-admin –version
+
+
+3.	Now copy the project from the local machine to the host machine.
+
+	$ scp -i *.pem source_directory.zip ubuntu@public_ip:~/
+	$ sudo apt install unzip
+	$ unzip source_directory.zip
+
+4.	Run the app and keep running it background:
+
+	$ screen
+	$ python3 manage.py runserver 0:8000
+
+5.	Finally, visit public_ip:8000 in your web browser to access your project.
