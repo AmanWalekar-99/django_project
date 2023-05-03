@@ -34,9 +34,15 @@ Commands
 	$ sudo apt install unzip
 	$ unzip source_directory.zip
 
-4.	Run the app and keep running it background:
+4.	Install application dependencies
+
+	$ pip install django-widget-tweaks
+	$ python3 -m pip install pillow
+
+
+5.	Run the app and keep running it background:
 
 	$ screen
 	$ python3 manage.py runserver 0:8000
 
-5.	Finally, visit public_ip:8000 in your web browser to access your project.
+6.	Finally, visit public_ip:8000 in your web browser to access your project.
