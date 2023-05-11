@@ -1,0 +1,72 @@
+---
+- hosts: webserver
+  become: true
+  vars:
+    project_name: myproject
+    app_port: 8000
+    app_user: django
+    app_group: django
+  tasks:
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+      become: true
+
+    - name: Install Python3 pip
+      apt:
+        name: python3-pip
+        state: present
+      become: true
+
+    - name: Upgrade pip
+      pip:
+        name: pip
+        state: latest
+        executable: pip3
+
+    - name: Install Django
+      pip:
+        name: Django==3.2
+        executable: pip3
+
+    - name: Install application dependencies
+      pip:
+        name:
+          - django-widget-tweaks
+          - Pillow
+        executable: pip3
+
+    - name: Copy source directory to server
+      copy:
+        src: "{{ playbook_dir }}/source_directory.zip"
+        dest: "/home/ubuntu/"
+      become: true
+
+    - name: Unzip source directory
+      unarchive:
+        src: "/home/ubuntu/source_directory.zip"
+        dest: "/home/ubuntu/{{ project_name }}"
+        remote_src: yes
+      become: true
+
+    - name: Create Django user and group
+      user:
+        name: "{{ app_user }}"
+        group: "{{ app_group }}"
+        shell: /bin/bash
+        createhome: yes
+      become: true
+
+    - name: Change ownership of project directory
+      file:
+        path: "/home/ubuntu/{{ project_name }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        recurse: yes
+      become: true
+
+    - name: Run Django app in background
+      shell: |
+        cd /home/ubuntu/{{ project_name }}
+        screen -d -m python3 manage.py runserver 0:{{ app_port }}
+      become: true
